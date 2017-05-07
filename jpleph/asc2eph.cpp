@@ -204,12 +204,17 @@ struct Arg: public option::Arg
     static const std::string CONSTANT_EMRAT = "EMRAT"; // eart moon mass ratio
     static const std::string CONSTANT_DENUM = "DENUM"; //id of the DE (deleopment ephemeris)
 
-    static const int NUM_BODIES = 15; // number of indices in i.e. "bodies" in ephemeries fiile
-    static const std::size_t INDEX_START_DATE = 0; // the first two entries in a data block
-    static const std::size_t INDEX_END_DATE   = 1; // are the entries for first and last date in the block
-                                                   // the actual data start at index 2 (in Fortran = 3) 
+    static const int NUM_BODIES = 15;                 // number of indices in i.e. "bodies" in ephemeries file
+    static const std::size_t INDEX_START_DATE = 0;    // the first two entries in a data block
+    static const std::size_t INDEX_END_DATE   = 1;    // are the entries for first and last date in the block
+                                                      // the actual data start at index 2 (in Fortran = 3) 
 
-    static const int OLDMAX = 400;                 // number of constants in file before DE430
+    static const int OLDMAX = 400;                    // number of constants in file before DE430
+
+                                               //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14
+    static std::vector<int> const dimensions = { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3 ,3, 1 }; // these are fixed values depending on the type of values
+                                                                                               // default is 3 except for Nutation (2) and TT-TDB (1) 
+
 
     bool gotoGroup(std::ifstream & headerStream, std::string const & groupName)
     {
@@ -304,9 +309,10 @@ struct Arg: public option::Arg
            !write(jpleph, au) ||
            !write(jpleph, emrat) ||
            !write(jpleph, deNum) ||
-           !write(jpleph, index) ||             // size + IPT,LPT,RPT,TPT are all in three vectors
+           !write(jpleph, index) ||                    // size + IPT,LPT,RPT,TPT are all in three vectors
            !write(jpleph, order) ||
-           !write(jpleph, entries))
+           !write(jpleph, entries) ||
+           !write(jpleph, dimensions))                 // vector of dimensions. This is not in the header but defined here 
          {
             return false;
          }
@@ -367,7 +373,7 @@ int main(int argc, char * argv[])
 
     if(argc == 0)
     {
-        option::printUsage(cout, usage);
+        option::printUsage(std::cout, usage);
         return 0;
     }
 
@@ -571,7 +577,8 @@ int main(int argc, char * argv[])
     // the third row is the number of subrecords for the body given by the index.
     vector<int> index;
     vector<int> order;
-    vector<int> entries;
+    vector<int> entries;         
+
     if(!gotoGroup(headerStream, HEADER_RECORD_1050))
     {
         groupError(HEADER_RECORD_1050);

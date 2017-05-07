@@ -34,18 +34,26 @@ Jpleph::Jpleph(string const &  jplFileName, bool aukm, bool daysecond, bool iaua
     }
 
     //CNAM
+    vector<string> constantNames;
     if(good)
     {
         good = read(jpleph, constantNames);
     }
 
     //CVAL
+    vector<double> constantValues;
     if(good)
     {
         good = read(jpleph, constantValues);
     }
 
     good = constantNames.size() == constantValues.size();
+
+    jplConstants.reserve(constantValues.size());
+    for (size_t i = 0; i < constantNames.size(); ++i)
+    {
+        jplConstants.push_back(Constant(constantNames.at(i), constantValues.at(i)));
+    }
 
     //SS(1)
     if(good)
@@ -86,30 +94,6 @@ Jpleph::Jpleph(string const &  jplFileName, bool aukm, bool daysecond, bool iaua
 
      //has to be after reading the data 
      calculateFactors(aukm, daysecond, iauau);
-
-     //TODO: for test only
-//       EphemerisRecord::RecordType  & currentRecord = record[5];
-//     currentRecord = record[5];
-//     std::vector<long double> *record2    = record[6];
-//     std::vector<long double> *record3    = record[7];
-//     std::vector<long double> *record4    = record[8];
-//     std::vector<long double> *record5    = record[10];
-//     std::vector<long double> *record6    = record[12];
-//     std::vector<long double> *record7    = record[13];
-//     std::vector<long double> *record8    = record[15];
-//     std::vector<long double> *record9    = record[18];
-//     std::vector<long double> *record10    = record[0];
-//     std::vector<long double> *record11    = record[42]; // this should evict
-
-	 //Chebysheff chebysheff(record[5]);
-     //std::vector<double> position;
-     //std::vector<double> velocity;
-     //chebysheff(0.1, 4, true, position, velocity);
-//	 chebysheff(0.1, 5);
-//	 chebysheff(0.1, 7);
-//	 chebysheff(0.5, 5);
-
-
 }
 
 
@@ -454,11 +438,9 @@ bool Jpleph::isPresent(EphemerisRecord::Entry const body)
 }
 
 
-void Jpleph::constants(std::vector<std::string> & names, std::vector<double> & values, 
-                       double & dateStart, double & dateEnd, double & dateInterval) const
+void Jpleph::constants(Constants & cons, double & dateStart, double & dateEnd, double & dateInterval) const
 {
-    names  = constantNames;
-    values = constantValues;
+    cons         = jplConstants;
     dateStart    = this->dateStart;
     dateEnd      = this->dateEnd;
     dateInterval = this->dateInterval;
@@ -466,3 +448,10 @@ void Jpleph::constants(std::vector<std::string> & names, std::vector<double> & v
 
 Jpleph::Time::Time() : t1(0.0), t2(0.0) {}
 Jpleph::Posvel::Posvel() : pos({ 0.0, 0.0, 0.0 }), vel({ 0.0, 0.0, 0.0 }) {}
+Jpleph::Constant::Constant(string const name, double const value) : name(name), value(value) {}
+Jpleph::Constant::Constant(Constant const & other) : name(other.name), value(other.value) {}
+Jpleph::Constant Jpleph::Constant::operator=(Constant const & rhs)
+{
+    return Constant(rhs.name, rhs.value);
+}
+

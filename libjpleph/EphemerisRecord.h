@@ -103,7 +103,9 @@ public:
 	};
 
 public:
-    EphemerisRecord(std::ifstream & jpleph, bool & good);    
+    EphemerisRecord(std::ifstream & jpleph, bool & good);
+    ~EphemerisRecord();
+
 
     // initialize i.e. read record 0
     void operator()();
@@ -112,10 +114,11 @@ public:
 	// descibes the format of the original raw record in the binary file. TODO: better optimized file format.
    struct RecordDescriptorEntry
    {
-        RecordDescriptorEntry(int const index, int const order, int const entries);
+        RecordDescriptorEntry(int const index, int const order, int const entries, int const dimension);
         int recordIndex;    // index into the record for the entry  (i.e. celestial body)
         int numEntries;     // number of sub intervalls/records in the record
         int numCoefficient; // number of coefficients for this entry
+        int dimension;
         
    };
 
@@ -162,7 +165,7 @@ private:
 
   // the LRU cache for ephemeris records. The actual records are cached here and are retrieved as vectors
   typedef std::list<int> KeyTrackerType; 
-  typedef std::unordered_map<int, std::pair< RecordType *, KeyTrackerType::iterator > > KeyToValueType; 
+  typedef std::unordered_map<int, std::pair< RecordType *, KeyTrackerType::iterator > > KeyToValueType;
 
   // Maximum number of key-value pairs to be retained 
   const size_t capacity; 

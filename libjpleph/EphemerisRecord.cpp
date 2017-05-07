@@ -37,6 +37,7 @@ void EphemerisRecord::getDescriptor()
     vector<int> index; // fortran index into the data record
     vector<int> order; // number of chebycheff coefficients/ order
     vector<int> subRecords; // number of entries for the data record
+    vector<int> dimensions; // number of components/dimension of entries
 
     if (good)
     {
@@ -53,26 +54,22 @@ void EphemerisRecord::getDescriptor()
         good = ::read(jpleph, subRecords);
     }
 
+    if (good)
+    {
+        good = ::read(jpleph, dimensions);
+    }
+
     // they should all have the same size. TODO? put it differently into the binary file <vector<vector<int>>. Would make it possible to read it as one object
-    good = (index.size() == order.size()) && (order.size() == subRecords.size());
+    good = (index.size() == order.size()) && (order.size() == subRecords.size() && (order.size() == dimensions.size()));
     recordDescriptor.reserve(index.size());
     for (size_t i = 0; i < index.size(); ++i)
     {
-        recordDescriptor.push_back(RecordDescriptorEntry(index[i] - 1, order[i], subRecords[i]));  // change Fortran index into C++ index (base 1 -> base 0)
+        recordDescriptor.push_back(RecordDescriptorEntry(index[i] - 1, order[i], subRecords[i], dimensions[i]));  // change Fortran index into C++ index (base 1 -> base 0)
     }
 
     for (size_t i = 0; i < recordDescriptor.size(); ++i)
     {
-        int dimension = 3;
-        if (i == 11)
-        {
-            dimension = 2;
-        }
-        else if (i == 14)
-        {
-            dimension = 1;
-        }
-        numElements += recordDescriptor[i].numEntries * recordDescriptor[i].numCoefficient*dimension; // total number of double coefficients  
+        numElements += recordDescriptor[i].numEntries * (recordDescriptor[i].numCoefficient)*(recordDescriptor[i].dimension); // total number of double coefficients  
     }
     numElements += 2; // startTime and endTime
 }
@@ -100,62 +97,11 @@ EphemerisRecord::RecordType * EphemerisRecord::readRecord(int const numRecord)
         {
             currentPosition = jpleph.tellg();
 
-            // now make record useable for interpolation:
-            // TODO: better structure in binary file
-            // can we do something better with enum in C++11
-            //			auto record = new vector < vector < vector< Vector3d * > *> *>;
-            //			(*record).reserve(15);
-
-            //			for (int i = 0; i < int(Entry::TT_TDB) + 1; ++i) // for all different objects
-            //			{
-            // vector<>  : number of objects
-            // of vector<> : number of sub intervals
-            //    of vector<> : order
-            //                int const numSubintervals = recordDescriptor[i].numEntries;
-            //                auto      subIntervals    = new vector < vector< Vector3d * > *>;
-            //				(*subIntervals).reserve(numSubintervals);
-            //					for (int j = 0; j < numSubintervals; ++j)  // number of subintervals
-            //					{
-            //                        int const polyOrder    = recordDescriptor[i].numCoefficient; // order of polynomials (+1)
-            //                        auto      coefficients = new vector< Vector3d * >;
-            //						(*coefficients).reserve(polyOrder);
-            //						for (int k = 0; k < polyOrder; ++k) // order of the polynomial
-            //						{
-            //                            // components: most have 3 components, exceptions are nutation (11), and time (14).
-            //                            const int recordIndex = recordDescriptor[i].recordIndex;
-            //                            Vector3d * coeff = NULL;
-            //							if (i != int(Entry::NUTATION) && i != int(Entry::TT_TDB))
-            //							{
-            //                                coeff = new Vector3d((*newRecord)[recordIndex + (3 * j)*polyOrder + k], (*newRecord)[recordIndex + (3 * j + 1)*polyOrder + k], (*newRecord)[recordIndex + (3 * j + 2)*polyOrder + k]);
-            //							} else if (i == int(Entry::NUTATION)) // nutation 2 components in longitude and obliquity
-            //							{
-            //                                coeff = new Vector3d((*newRecord)[recordIndex + (3 * j)*polyOrder + k], (*newRecord)[recordIndex + (3 * j + 1)*polyOrder + k], 0.0);
-            //							}
-            //							else // object 14 1 component TT to TDB 
-            //							{
-            //                                coeff = new Vector3d((*newRecord)[recordIndex + (3 * j)*polyOrder + k], 0.0,  0.0);
-            //							}
-
-            //                            if (coeff != NULL)
-            //                            {
-            //                                (*coefficients).push_back(coeff);
-            //                            }
-
-            //						} // poynomial
-
-            //						(*subIntervals).push_back(coefficients);
-            //					} // subinterval
-
-
-            //				(*record).push_back(subIntervals);
-            //			} // object
-
-            return newRecord; //TODO: this is the raw record for testing only
+            return newRecord; 
         }
     }
     good = false;
-    return NULL;
-    //throw
+    throw invalid_argument("EphemerisRecord::RecordType::readRecord: invalid record number");
 }
 
 
@@ -174,11 +120,12 @@ EphemerisRecord::RecordDescriptorEntry const & EphemerisRecord::RecordType::getD
 
 
 
-EphemerisRecord::RecordDescriptorEntry::RecordDescriptorEntry(int const index, int const order, int const entries)
+EphemerisRecord::RecordDescriptorEntry::RecordDescriptorEntry(int const index, int const order, int const entries, int const dim)
 {
     recordIndex     = index;
     numCoefficient  = order;
     numEntries      = entries;
+    dimension       = dim;
 }
 
 
@@ -264,4 +211,13 @@ EphemerisRecord::RecordDescriptorEntry EphemerisRecord::getDescriptorEntry(const
 bool EphemerisRecord::read(std::ifstream & jpleph, EphemerisRecord::RecordType & values)
 {
     return ::read(jpleph, static_cast<std::vector<double> &>(values));
+}
+
+// cleanup chache and don't leak
+EphemerisRecord::~EphemerisRecord()
+{
+    for (auto elem : keyToValue)
+    {
+        delete (elem.second.first);
+    }
 }

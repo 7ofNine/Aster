@@ -61,6 +61,10 @@ struct Arg: public option::Arg
         {0,0,0,0,0,0}
     };  
 
+
+    static double const JDEPOC_DEFAULT     = 2440400.5;
+    static std::string const JDEPOC_NAME   = "JDEPOC";
+    static std::string const HEADER_MARKER = "EOT";
 }
 
 
@@ -70,9 +74,9 @@ bool skipToData(ifstream & contolFile);
 
 int main(int argc, char * argv[])
 {
-    // write standrad finger print
-    cout << "\nTest program for JPL DE ephemeries.\n" \
-        "Derived from JPL testeph1.f from 2014-03-15." << endl << endl;
+    // write standard finger print
+    cout << endl << "Test program for JPL DE ephemeries."  << endl 
+         << "Derived from JPL testeph1.f from 2014-03-15." << endl << endl;
     // skip program name if present
     if(argc > 0)
     {
@@ -128,14 +132,13 @@ int main(int argc, char * argv[])
     Jpleph jpleph(jplephFileName); 
 
     // read constants and display them
-    vector<string> names;
-    vector<double> values;
+    Jpleph::Constants constants;
     double dateStart;
     double dateEnd;
     double dateInterval;
-    jpleph.constants(names, values, dateStart, dateEnd, dateInterval);
+    jpleph.constants(constants, dateStart, dateEnd, dateInterval);
 
-    double jdepoc = 2440400.5; // default epoch
+    double jdepoc = JDEPOC_DEFAULT; // default epoch
     cout << showpoint << setw(14) << setprecision(14);
     cout << "Start date     : "  << dateStart    << endl;
     cout << "End date       : "  << dateEnd      << endl;
@@ -143,17 +146,16 @@ int main(int argc, char * argv[])
     cout << endl;
 
     // now show the values on the screen
-    for (size_t i = 0; i < names.size(); ++i)
+    for (size_t i = 0; i < constants.size(); ++i)
     {
-        if (names.at(i) == "JDEPOC")
+        if (constants.at(i).name == JDEPOC_NAME)
         {
-            jdepoc = values.at(i);
+            jdepoc = constants.at(i).value;
         }
-        cout << setw(8) << names[i] << ":  " << setw(24) << setprecision(16) << values[i] << endl;
+        cout << setw(8) << constants[i].name << ":  " << setw(24) << setprecision(16) << constants[i].value << endl;
     }
 
     // open test control file
-    // open header file
     ifstream testInput(testControlFileName);
     if (!testInput.is_open())
     {
@@ -190,13 +192,17 @@ int main(int argc, char * argv[])
     while (!testInput.eof())
     {
         testInput >> de >> date >> tdb >> target >> center >> component >> value;
+        if (!testInput.good()) // skip empty lines (at the end mainly)
+        {
+            continue;
+        }
         if(tdb <= dateStart || tdb >= dateEnd)
         {
             continue;
         }
         Jpleph::Time time;
         time.t1 = tdb;
-        Jpleph::Posvel posvel;// = { {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0} };
+        Jpleph::Posvel posvel;
         jpleph.dpleph(time, Jpleph::Target(target), Jpleph::Target(center), posvel);
 
         // the comparison with expected result
@@ -286,7 +292,7 @@ bool skipToData(ifstream & controlFile)
     string line = "";
     while(getline(controlFile, line))
     {
-        if (line.size() >= 3 && line.substr(0, 3) == "EOT")
+        if (line.size() >= 3 && line.substr(0, 3) == HEADER_MARKER)
         {
             return true;
         }

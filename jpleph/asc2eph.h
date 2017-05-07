@@ -6,9 +6,9 @@
 // templates for write methods
 
 template <typename T>
-bool write(std::ofstream & outStream,  T const & value)
+bool write(std::ofstream & outStream, T const & value)
 {
-    outStream.write((char *) & value, sizeof(T));
+    outStream.write((char *)& value, sizeof(T));
     return outStream.good();
 }
 
@@ -16,24 +16,43 @@ bool write(std::ofstream & outStream,  T const & value)
 template<>
 bool write(std::ofstream & outStream, std::string const & value)   //TODO: how can we force ot to take a reference for strings but not for primitives Traits??
 {
-        outStream.write((char *) value.c_str(), value.size() + 1);
-        return outStream.good();    
-} 
+    outStream.write((char *)value.c_str(), value.size() + 1);
+    return outStream.good();
+}
 
 template <typename T>
 bool write(std::ofstream & outStream, std::vector<T> const & values)
 {
-    if(!write<std::vector<T>::size_type>(outStream, values.size())) // writing out the size of the vector
+    if (!write<std::vector<T>::size_type>(outStream, values.size())) // writing out the size of the vector
     {
         return false;
     }
 
-    for(std::vector<T>::size_type i = 0 ; i < values.size(); ++i)
+    for (std::vector<T>::size_type i = 0; i < values.size(); ++i)
     {
-        if(!write<T>(outStream, values[i]))
+        if (!write<T>(outStream, values[i]))
         {
             return false;
-        }    
+        }
     }
     return true;
 }
+
+
+//template <typename T>
+//bool write(std::ofstream & outstream, std::array<T> const & values)
+//{
+//    if (!write <std::array<T>::size_type>(outstream, values.size())) // wrtitng out the size of the array
+//    {
+//        return false;
+//    }
+
+//    for (std::array<T>::size_type i = 0; i < values.size(); ++i)
+//    {
+//        if (!write<T>(outstream, values[i]))
+//        {
+//            return false;
+//        }
+//    }
+//    return true;
+//}

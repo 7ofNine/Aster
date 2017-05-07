@@ -48,15 +48,6 @@ public:
         TT_TTB        = 17,
     };
 
-    enum class InterpolationType
-    {
-        NONE              = 0,
-        POSITION          = 1,
-        POSITION_VELOCITY = 2,
-    };
-
-    typedef std::array<InterpolationType, int(Target::LIBRATIONS)> BodyList;
-    typedef std::array<Posvel, int(Target::LIBRATIONS)>            PosvelList;
 
 //     this method reads the jpl planetary ephemeris                 
 //     and gives the position and velocity of the point 'target'          
@@ -73,10 +64,10 @@ public:
 //                                                                       
 //     ncent = the  center point.                           
 //                                                                       
-//     The numbering convention for 'target' and 'center' is:     
-//     the corresponding enum numericla value is this value -1
-//
-//                                                                       
+//     The numbering convention for 'target' and 'center' is which is implemented by
+//     the enum class Target
+//                          
+//                0 = None
 //                1 = Mercury                                
 //                2 = Venus                                    
 //                3 = Earth            
@@ -97,8 +88,7 @@ public:
 //
 //      Note that not all ephemerides include all of the above quantities.
 //      When a quantity is requested that is not on the file,
-//      a warning is printed and the components of PV are set to - 99.d99,
-//      which is not a valid value for any quantity.
+//      a warning is printed and an invalid_argument exception thrown.
 //
 //      For nutations, librations, and TT - TDB, 'center' is ignored
 //
@@ -128,8 +118,18 @@ public:
     void dpleph(Time const & et, Target const target, Target const center , Posvel & posvel);  
 
     // read the names and values of the ephemeries constants
-    void constants(std::vector<std::string> & names, std::vector<double> & values,
-                   double & dateStart, double & dateEnd, double & dateInterval) const;
+    struct Constant
+    {
+        Constant(std::string const name, double const value);
+        Constant(Constant const &);
+        Constant operator=(Constant const & rhs);
+        std::string const name;
+        double const      value;
+    };
+
+    typedef std::vector<Constant> Constants;
+
+    void constants(Constants & constants, double & dateStart, double & dateEnd, double & dateInterval) const;
 
 private:
 
@@ -150,8 +150,7 @@ private:
 
     EphemerisRecord record;
 
-    std::vector<std::string> constantNames;
-    std::vector<double>      constantValues;
+    Constants jplConstants;
 
 
     // actual ephemeris data   

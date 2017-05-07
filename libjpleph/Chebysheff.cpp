@@ -6,9 +6,9 @@ void Chebysheff::operator()(double const & time, int const body, bool const vel,
 {
     //TODO: encode in descriptor!!
     // only temporary
-    int numComponents = 3; // that is default
-    if (body == 14) numComponents = 1;
-    if (body == 11) numComponents = 2;
+ //   int numComponents = 3; // that is default
+ //   if (body == 14) numComponents = 1;
+ //   if (body == 11) numComponents = 2;
 
     // read the descriptor for the body
     EphemerisRecord::RecordDescriptorEntry const & entryDescriptor = record.getDescriptor(body);
@@ -22,8 +22,8 @@ void Chebysheff::operator()(double const & time, int const body, bool const vel,
     createPolyValues(tc, entryDescriptor.numCoefficient, vel, p, v);
 
     // interpolation
-    int const base = entryDescriptor.recordIndex + sub*entryDescriptor.numCoefficient * numComponents; // TODO: depends on the dimensions
-    for (int i = 0; i < numComponents; ++i)  // vector component  // always 3 ? no has to come in as parameter. Put in ephemeries file??
+    int const base = entryDescriptor.recordIndex + sub*(entryDescriptor.numCoefficient) * (entryDescriptor.dimension); // TODO: depends on the dimensions
+    for (int i = 0; i < entryDescriptor.dimension; ++i)  // vector component  // always 3 ? no has to come in as parameter. Put in ephemeries file??
     {
         double tempp = 0.0;
 
@@ -39,7 +39,7 @@ void Chebysheff::operator()(double const & time, int const body, bool const vel,
     if (vel)
     {
         double const vfac = (2.0 * nsub) / secspan;
-        for (int i = 0; i < numComponents; ++i) // TODO: number of components
+        for (int i = 0; i < entryDescriptor.dimension; ++i) // TODO: number of components
         {
             double tempv = 0.0;
             for (int j = entryDescriptor.numCoefficient - 1; j >= 1; --j)
