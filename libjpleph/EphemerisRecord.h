@@ -2,14 +2,12 @@
 // A single record of the ephmeris file in palatable format for further processing
 //
 #pragma once
-
+#ifndef EPHEMERISRECORD_H
+#define EPHEMERISRECORD_H
 #include <fstream>
 #include <vector>
 #include <list>
 #include <unordered_map>
-
-#include "Chebysheff.h"
-# 
 
 
 //  the actual data
@@ -74,12 +72,17 @@
 //  The nutations and librations are stored in units of radians.
 //  The mantle angular velocities are stored in radians/day.
 //  TT-TDB is stored in seconds.
+// 
+//  The actual data are in GROUP 1070 and are written as lomg double/double (for Visual C++ the same size) to the 
+//  binary ephemeries file. For each block in the record the first to entries are the start and end date of the block respectively.
+//  the length of the block interval is given in the header file
+//  the number of elements in the record is wrtiiten to the binary file too as an unsigned integer (this is not how JPL does it) 
 
 
 class EphemerisRecord 
 {
 public:
-	enum class Entry // the raw types in the binary ephemeries file. The numerical value gives the order within the binary record
+	enum class Entry // the raw types in the binary ephemeries file. The numerical value gives the order within the binary record i.e. index into the record descriptor
 	{
 		NONE      = -1,
 		MERCURY   = 0,
@@ -105,22 +108,38 @@ public:
     // initialize i.e. read record 0
     void operator()();
     
-    typedef std::vector<long double> RecordType;
-
-    RecordType * operator[](int const numRecord);
-
-
-private:
 
 	// descibes the format of the original raw record in the binary file. TODO: better optimized file format.
    struct RecordDescriptorEntry
    {
         RecordDescriptorEntry(int const index, int const order, int const entries);
         int recordIndex;    // index into the record for the entry  (i.e. celestial body)
+        int numEntries;     // number of sub intervalls/records in the record
         int numCoefficient; // number of coefficients for this entry
-        int numEntries;     // number of sub intervalls in the record
+        
    };
 
+   class RecordType : public std::vector<double>
+   {
+   public:
+       explicit RecordType(std::vector<RecordDescriptorEntry> const & descriptor);
+
+       RecordDescriptorEntry const & getDescriptor(int const body) const;
+
+   private:
+       std::vector<RecordDescriptorEntry> const & descriptor;
+   };
+
+
+
+   RecordType  & operator[](int const numRecord);
+
+
+   RecordDescriptorEntry getDescriptorEntry(const int body);
+
+private: 
+
+    bool read(std::ifstream & jpleph, RecordType & values);
     void getDescriptor(); // read the record structure descriptor. Note: This requires a proper positioning of the input stream!!
     RecordType * readRecord(int const numRecord);
 
@@ -131,6 +150,7 @@ private:
 
     bool & good;
     std::vector<RecordDescriptorEntry> recordDescriptor;
+    int numElements;
 
    std::ifstream & jpleph;
 
@@ -152,7 +172,6 @@ private:
  
   // Key-to-value lookup 
   KeyToValueType keyToValue;  // the actual cache
-
-  Chebysheff chebysheff;
-
 };
+
+#endif

@@ -11,41 +11,53 @@ class Jpleph
 {
 
 public:
-    explicit Jpleph(std::string const & jplFileName);
+    explicit Jpleph(std::string const & jplFileName, bool aukm = true, bool daysecond = true, bool iauau = false);
 
     struct Time
     {
-        long double t1; // long double integer part
-        long double t2; // long double fractional part  
+        Time();
+        double t1; // long double integer part
+        double t2; // long double fractional part  
+    };
+
+    struct Posvel
+    {
+        Posvel();
+        std::vector<double> pos; // position vector
+        std::vector<double> vel; // velocity vector
     };
 
     enum class Target
     {
-        OBJECT_NONE          =  0,
-        OBJECT_MERCURY       =  1,
-        OBJECT_VENUS         =  2,
-        OBJECT_EARTH         =  3, 
-        OBJECT_MARS          =  4,
-        OBJECT_JUPITER       =  5,
-        OBJECT_SATURN        =  6,
-        OBJECT_URANUS        =  7,
-        OBJECT_NEPTUN        =  8,
-        OBJECT_PLUTO         =  9,
-        OBJECT_MOON          = 10,
-        OBJECT_SUN           = 11,
-        OBJECT_SS_BARYCENTER = 12,
-        OBJECT_EM_BARYCENTER = 13,
-        OBJECT_NUTATIONS     = 14,  
-        OBJECT_LIBRATIONS    = 15,
+        NONE          =  0,
+        MERCURY       =  1,
+        VENUS         =  2,
+        EARTH         =  3, 
+        MARS          =  4,
+        JUPITER       =  5,
+        SATURN        =  6,
+        URANUS        =  7,
+        NEPTUN        =  8,
+        PLUTO         =  9,
+        MOON          = 10,
+        SUN           = 11,
+        SS_BARYCENTER = 12,
+        EM_BARYCENTER = 13,
+        NUTATIONS     = 14,  
+        LIBRATIONS    = 15,
+        LIBRATIONVELO = 16,
+        TT_TTB        = 17,
     };
 
-    enum InterpolationType
+    enum class InterpolationType
     {
-        INTERPOLATION_NOME              = 0,
-        INTERPOLATION_POSITION          = 1,
-        INTERPOLATION_POSITION_VELOCITY = 2,
+        NONE              = 0,
+        POSITION          = 1,
+        POSITION_VELOCITY = 2,
     };
 
+    typedef std::array<InterpolationType, int(Target::LIBRATIONS)> BodyList;
+    typedef std::array<Posvel, int(Target::LIBRATIONS)>            PosvelList;
 
 //     this method reads the jpl planetary ephemeris                 
 //     and gives the position and velocity of the point 'target'          
@@ -62,16 +74,38 @@ public:
 //                                                                       
 //     ncent = the  center point.                           
 //                                                                       
-//            the numbering convention for 'target' and 'center' is:       
+//     The numbering convention for 'target' and 'center' is:     
+//     the corresponding enum numericla value is this value -1
+//
 //                                                                       
-//                1 = mercury           8 = neptune                      
-//                2 = venus             9 = pluto                        
-//                3 = earth            10 = moon                         
-//                4 = mars             11 = sun                          
-//                5 = jupiter          12 = solar-system barycenter      
-//                6 = saturn           13 = earth-moon barycenter        
-//                7 = uranus           14 = nutations (longitude and obli
-//                            15 = librations, if on eph file            
+//                1 = Mercury                                
+//                2 = Venus                                    
+//                3 = Earth            
+//                4 = Mars system barycenter
+//                5 = Jupiter system barycenter
+//                6 = Saturn system brycenter
+//                7 = Uranus system barycenter
+//                8 = Neptune system barycenter
+//                9 = Pluto system barycenter
+//                10 = Moon(of Earth)
+//                11 = Sun
+//                12 = Solar - System Barycenter
+//                13 = Earth - Moon barycenter
+//                14 = Nutations(Longitude and Obliquity)
+//                15 = Lunar Euler angles : phi, theta, psi
+//                16 = Lunar angular velocity : omegax, omegay, omegaz
+//                17 = TT - TDB
+//
+//      Note that not all ephemerides include all of the above quantities.
+//      When a quantity is requested that is not on the file,
+//      a warning is printed and the components of PV are set to - 99.d99,
+//      which is not a valid value for any quantity.
+//
+//      For nutations, librations, and TT - TDB, 'center' is ignored
+//
+//      posvel     returned values
+
+// TODO: extend description see testeph1.f
 //                                                                       
 //             (if nutations are wanted, set ntarg = 14. for librations, 
 //              set ntarg = 15. set ncent=0.)                            
@@ -92,12 +126,20 @@ public:
 //            for this, set km=.true. in the stcomx common block.        
 //                                                                       
 
-    bool dpleph(Time const & et, Target const target, Target const center/*, vector<long double> positionSpeed*/);  
+    void dpleph(Time const & et, Target const target, Target const center , Posvel & posvel);  
+
+    // read the names and values of the ephemeries constants
+    void constants(std::vector<std::string> & names, std::vector<double> & values,
+                   double & dateStart, double & dateEnd, double & dateInterval) const;
+
 private:
 
-    void split(long double const time, Time & preciseTime);
-    void state(Time const & time);
+    void split(double const time, Time & preciseTime);
+    void state(Time const & time, BodyList const & list, PosvelList & posvelList);
     Time & determineTime(Time const & inTime, Time & interpolationTime);
+    void calculateFactors(bool aukm, bool daysecond, bool iauau);
+    bool inDateRange(Time const & interpolationTime);
+    bool isPresent(EphemerisRecord::Entry const body);
 
     
    std::ifstream jpleph;
@@ -106,7 +148,6 @@ private:
    std::streamoff recordLength;
    std::streampos currentPositon;
 
-   EphemerisRecord readRecord(int const numRecord);
 
 
 //   vector<int> index; // fortran index into the data record
@@ -116,9 +157,21 @@ private:
 
     EphemerisRecord record;
 
+    std::vector<std::string> constantNames;
+    std::vector<double>      constantValues;
+
+
     // actual ephemeris data   
     long double dateStart;
     long double dateEnd;
     long double dateInterval;
 
+    // constants needed for calculations
+    long double au;     // au in km
+    long double emrat;  // earthmoon mass ratio
+    long int denum;     // JPL DE number (for logging purposes)
+    double factorEarth; // mass factor for earth
+    double factorMoon;  // mass factor for moon
+    double xscale;      // scale factor for position
+    double vscale;      // scale factor for velocity
 };

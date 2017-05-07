@@ -119,7 +119,7 @@
 // there are two components for the 12th item, nutations : d(psi) and d(epsilon);
 // there are three components for the 13th item, librations : phi, theta, psi;
 // there are three components for the 14th item, mantle omega_x, omega_y, omega_z;
-// there is one component for the 17th item, TT - TDB.
+// there is one component for the 15th item, TT - TDB.
 // 
 // Planetary positions are stored in units of kilometers(TDB - compatible).
 // The nutations and librations are stored in units of radians.
@@ -564,9 +564,11 @@ int main(int argc, char * argv[])
     }
 
     //read group 1050. The record descriptor
-    // the first line of the record contains a counter(should > 0) and the size of ther record entries of long double values
-    //first two entries in the record are the startdate and the enddate of the record
+    //(GROUP 1070) the first line of the record contains a counter(should > 0) and the size of ther record entries of long double values
+    //(GROUP 1070) first two entries in the record are the startdate and the enddate of the record
     //first row is the index into the record for "body"
+    // second row is the number of the polynomial coefficients for the chebycheff polynomial i.e. the order
+    // the third row is the number of subrecords for the body given by the index.
     vector<int> index;
     vector<int> order;
     vector<int> entries;
@@ -722,6 +724,7 @@ int main(int argc, char * argv[])
 
             // TODO: this has to become more complex
             // handling first records, date ranges and changing input files
+            // the first two entries in a data block are the start and end date of the block
             if(db[INDEX_END_DATE] < tEnd)
             {
                 // not at the end date // todo but we could be reaching file end!
@@ -754,7 +757,7 @@ int main(int argc, char * argv[])
 
                     blockCounter++;
             
-                    if(!write(jpleph, db))
+                    if(!write(jpleph, db)) // writing everything including start end end date of block
                     {
                         cerr << "Writing block" << blockCounter << " failed" << endl;
                         return 0;                            

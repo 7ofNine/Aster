@@ -23,7 +23,7 @@ bool write(std::ofstream & outStream, std::string const & value)   //TODO: how c
 template <typename T>
 bool write(std::ofstream & outStream, std::vector<T> const & values)
 {
-    if(!write<std::vector<T>::size_type>(outStream, values.size()))
+    if(!write<std::vector<T>::size_type>(outStream, values.size())) // writing out the size of the vector
     {
         return false;
     }

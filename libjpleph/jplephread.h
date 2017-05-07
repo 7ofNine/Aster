@@ -7,8 +7,8 @@
 #include <fstream>
 #include <vector>
 
-// read of primitive types 
 
+// read of primitive types 
 template<typename T> 
 bool read(std::ifstream & jpleph, T & value)
 {
@@ -23,8 +23,6 @@ bool read(std::ifstream & jpleph, T & value)
 
 
 // specialized read for std::string
-
-template<>
 inline bool read(std::ifstream & jpleph, std::string & value)
 {
     // we assume there are no strings longer than 255 char
@@ -40,8 +38,6 @@ inline bool read(std::ifstream & jpleph, std::string & value)
 }
 
 
-// template for reading a vector<T>
-
 template<typename T>
 bool read(std::ifstream & jpleph, std::vector<T> & values)
 {
@@ -52,6 +48,10 @@ bool read(std::ifstream & jpleph, std::vector<T> & values)
         return false;
     }
 
+    // just in case clear out the vector
+    values.clear();
+    // reserve the size and avoid realocations
+    values.reserve(size);
     // now read the values
     for(std::vector<T>::size_type i = 0; i < size; ++i)
     {
@@ -70,7 +70,6 @@ bool read(std::ifstream & jpleph, std::vector<T> & values)
 
 // specialized template for reading a vector<std::string>
 
-template<>
 inline bool read(std::ifstream & jpleph, std::vector<std::string> & values)
 {
     // first we read the size
@@ -80,6 +79,10 @@ inline bool read(std::ifstream & jpleph, std::vector<std::string> & values)
         return false;
     }
 
+    // just in case clear out the vector
+    values.clear();
+    // reserve the size and avoid realocations
+    values.reserve(size);
     // now read the values
     for(std::vector<std::string>::size_type i = 0; i < size; ++i)
     {
@@ -94,4 +97,3 @@ inline bool read(std::ifstream & jpleph, std::vector<std::string> & values)
 
     return true;
 }
-
