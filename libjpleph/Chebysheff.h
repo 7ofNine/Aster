@@ -15,7 +15,6 @@ class Chebysheff
 {
     public:
     explicit Chebysheff(EphemerisRecord::RecordType const & record, double const & secspan);
-    void operator()(double const & interpolPoint, int const order);
     void operator()(double const & time, int const body, bool const vel, std::vector<double> & position, std::vector<double> & velocity);
 
     private:

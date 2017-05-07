@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "EphemerisRecord.h"
-//#include "RecordDescriptor.h"
 
 class Jpleph 
 {
@@ -135,7 +134,6 @@ public:
 private:
 
     void split(double const time, Time & preciseTime);
-    void state(Time const & time, BodyList const & list, PosvelList & posvelList);
     Time & determineTime(Time const & inTime, Time & interpolationTime);
     void calculateFactors(bool aukm, bool daysecond, bool iauau);
     bool inDateRange(Time const & interpolationTime);
@@ -149,11 +147,6 @@ private:
    std::streampos currentPositon;
 
 
-
-//   vector<int> index; // fortran index into the data record
-//   vector<int> order; // number of chebycheff coefficients/ order
-//   vector<int> entries; // number of entries for the data record
-//    RecordDescriptor  recordDescriptor;
 
     EphemerisRecord record;
 

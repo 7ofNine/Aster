@@ -6,6 +6,8 @@
 #include <fstream>
 #include <cmath>
 #include <exception>
+#include <iostream>
+#include <iomanip>
 
 #include "jpleph.h"
 #include "jplephread.h"
@@ -115,8 +117,24 @@ Jpleph::Jpleph(string const &  jplFileName, bool aukm, bool daysecond, bool iaua
 // At time t get the position (and) velocity of target with respect to center
 void Jpleph::dpleph(Time const & etd, Target const target, Target const center, Posvel & posvel)
 {
-    //check for proper combination of target and center
-    //TODO: more  checks
+    //sanity check for proper combination of target and center
+    if (target < Target::MERCURY || target > Target::TT_TTB)
+    {
+        cerr << "Jpleph::dpleph: Invalid target " << int(target) << endl;
+        throw out_of_range("Invalid target");
+    }
+
+    // no center for non body values
+    if (   (center <= Target::NONE && target < Target::NUTATIONS)
+        || (center > Target::EM_BARYCENTER && target < Target::NUTATIONS)
+        || (target <= Target::EM_BARYCENTER && center >= Target::NUTATIONS) )
+    {
+        cerr << "Jpleph::dpleph: Invalid center " << int(center) << " for target " << int(target) << endl;
+        throw out_of_range("Invalid center");
+    }
+
+
+    // target anc center are the same. Location vector and relative speeds are both 0.0 
     if (target <= Target::EM_BARYCENTER && target == center)
     {   // target and center are equal
         posvel.pos = std::vector<double>({ 0.0, 0.0, 0.0 });
@@ -128,7 +146,15 @@ void Jpleph::dpleph(Time const & etd, Target const target, Target const center, 
 
     if (!inDateRange(interpolationTime))
     {
-        // throw out of range
+        cerr << "Jpleph::dpleph: Requested date " 
+             << fixed << showpoint << setw(14) << setprecision(5) << (etd.t1 + etd.t2)
+             << " not in ephmeries range "
+             << fixed << showpoint << setw(10) << setprecision(1) << dateStart 
+             << " < t < " 
+             << fixed << showpoint << setw(10) << setprecision(1) << dateEnd
+             << endl;
+
+        throw out_of_range("Date outside of ephemeries range");
     }
 
     // calculate ephemris record to load
@@ -155,8 +181,8 @@ void Jpleph::dpleph(Time const & etd, Target const target, Target const center, 
         }
         else
         {
-            return;
-            // throw
+            cerr << "Jpleph::dpleph: Requested \"Nutation\" but not in ephemeries file";
+            throw invalid_argument("Nutation not in ephemeries file");
         }
      }
 
@@ -173,8 +199,8 @@ void Jpleph::dpleph(Time const & etd, Target const target, Target const center, 
         }
         else
         {
-            return;
-            //throw not on file
+            cerr << "Jpleph::dpleph: Requested \"Libration\" but not in ephemeries file";
+            throw invalid_argument("Libration not in ephemeries file");
         }
     }
 
@@ -192,8 +218,8 @@ void Jpleph::dpleph(Time const & etd, Target const target, Target const center, 
         }
         else
         {
-            return;
-            //throw not on file
+            cerr << "Jpleph::dpleph: Requested \"Libration Rates\" but not in ephemeries file";
+            throw invalid_argument("Libration rates not in ephemeries file");
         }
     }
 
@@ -204,13 +230,13 @@ void Jpleph::dpleph(Time const & etd, Target const target, Target const center, 
         if (isPresent(EphemerisRecord::Entry::TT_TDB))
         {
             chebysheff(tScaled, int(EphemerisRecord::Entry::TT_TDB), true, posvel.pos, posvel.vel); // dimension = 1
-            posvel.pos[1] = SECONDS_PER_DAY * posvel.pos[1];  // always convert to seconds/second to second/day
+            posvel.vel[0] = SECONDS_PER_DAY * posvel.vel[0];  // always convert to seconds/second to second/day
             return;
         }
         else
         {
-            return;
-            //throw not on file
+            cerr << "Jpleph::dpleph: Requested \"TT-TDB\" but not in ephemeries file";
+            throw invalid_argument("TT-TDB not in ephemeries file");
         }
     }
 
@@ -341,38 +367,6 @@ void Jpleph::dpleph(Time const & etd, Target const target, Target const center, 
         posvel.pos[i] = (posvel1.pos[i] - posvel2.pos[i]) * xscale;
         posvel.vel[i] = (posvel1.vel[i] - posvel2.vel[i]) * vscale;
     }
- }
-
-
- // TODO: state is no longer used it's old
- // the actual intrpolation method 
- void Jpleph::state(Time const & time, BodyList const & list, PosvelList & posvel )
- {
-    if(time.t1 == 0.0)
-    {
-        return; //?? what about t = 0.0?
-    }
-
-    Time interpolationTime = determineTime(time, interpolationTime);
-
-    // check if epoch is in range
-    if(interpolationTime.t1 + interpolationTime.t2 < dateStart || interpolationTime.t1 + interpolationTime.t2 > dateEnd)
-    {
-        //throw out of range
-       // throw out_of_range("Jpleph::state: Inerpolation time out of epehemris range " + dateStart + "/" + dateEnd);
-    }
-    
-    // calculate ephemris record to load
-    int loadRecord = int(floor((interpolationTime.t1 - dateStart)/dateInterval));
-    if(interpolationTime.t1 == dateEnd)
-    {
-        loadRecord--;
-    }
-    // get the ephemeris record and setup chebysheff interpolation
-    //Chebysheff Chebysheff(record[loadRecord]);
-
-    // scale time relative into the record (0<= tScaled <= 1.0). This is the range for time t the chebysheff interpolation routine expects.
-    long double tScaled = (interpolationTime.t1 - ((dateInterval * loadRecord) + dateStart) + interpolationTime.t2)/dateInterval;
  }
 
 

@@ -143,7 +143,7 @@ int main(int argc, char * argv[])
     cout << endl;
 
     // now show the values on the screen
-    for (int i = 0; i < names.size(); ++i)
+    for (size_t i = 0; i < names.size(); ++i)
     {
         if (names.at(i) == "JDEPOC")
         {
@@ -201,6 +201,24 @@ int main(int argc, char * argv[])
 
         // the comparison with expected result
         double del;
+        // testeph and jpl uses a somewhat shifted and inhomogeneous component numbering
+        // translate it to match our posvel structure
+        if (target == 14) // nutation
+        {
+            if (component > 2)
+            {
+                component += 1;
+            }
+        }
+
+        if (target == 17) // tt-tdb
+        {
+            if (component > 1)
+            {
+                component += 2;
+            }
+        }
+
         double calcValue = (component < 4) ? posvel.pos.at(component - 1) : posvel.vel.at(component - 4);
         del = fabs(calcValue - value);
 
@@ -248,6 +266,7 @@ int main(int argc, char * argv[])
 
     if (ok)
     {
+        cout << endl;
         cout << "testeph checked successfully against ephemeris file " << endl;
         cout << "over Julian date range " << fixed << showpoint << setw(10) << setprecision(1)<< tdbmin 
              << " to " << setw(10) << setprecision(1) << tdbmax << endl;
