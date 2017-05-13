@@ -394,7 +394,7 @@ void Jpleph::calculateFactors(bool aukm, bool daysecond, bool iauau)
 
     if (factorEarth == 0.0)
     {
-        //scream; throw
+        throw invalid_argument("Mass factor for Earth could not be determined");
     }
 
     if (aukm) // use au instead of km
@@ -419,7 +419,7 @@ void Jpleph::calculateFactors(bool aukm, bool daysecond, bool iauau)
 
     if (denum == 0)
     {
-        //throw
+        throw invalid_argument("No DENUM found");
     }
 }
 
@@ -447,7 +447,9 @@ void Jpleph::constants(Constants & cons, double & dateStart, double & dateEnd, d
 }
 
 Jpleph::Time::Time() : t1(0.0), t2(0.0) {}
+
 Jpleph::Posvel::Posvel() : pos({ 0.0, 0.0, 0.0 }), vel({ 0.0, 0.0, 0.0 }) {}
+
 Jpleph::Constant::Constant(string const name, double const value) : name(name), value(value) {}
 Jpleph::Constant::Constant(Constant const & other) : name(other.name), value(other.value) {}
 Jpleph::Constant Jpleph::Constant::operator=(Constant const & rhs)
