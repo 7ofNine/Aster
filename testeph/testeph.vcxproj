@@ -14,6 +14,7 @@
     <ProjectGuid>{48370876-5616-4E31-B190-9229CD2EDA1F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>testeph</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

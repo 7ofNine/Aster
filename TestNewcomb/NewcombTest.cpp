@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <cmath>
 #include "TrigTable.h"
+#include "Newcomb.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -496,5 +497,17 @@ namespace TestNewcomb
             }
         }
 
+
+        BEGIN_TEST_METHOD_ATTRIBUTE(testSunPosition)
+            TEST_DESCRIPTION("Test for a specific time the position of the sun")
+        END_TEST_METHOD_ATTRIBUTE()
+        TEST_METHOD(testSunPosition)
+        {
+            Newcomb newcomb;
+            Position sun = newcomb.earth(2500000.0);
+        }
 	};
+
+   
+
 }

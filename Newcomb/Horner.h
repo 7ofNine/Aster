@@ -14,7 +14,7 @@ public:
     Horner(std::initializer_list<double> list);
     ~Horner();
 
-    double operator()(double const);
+    double operator()(double const) const;
 
 private :
     std::vector<double> coeff;

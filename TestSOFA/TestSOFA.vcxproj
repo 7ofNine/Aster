@@ -23,7 +23,7 @@
     <ProjectGuid>{23271173-3E9C-4635-B1D1-14E9DB0DBC75}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TestSOFA</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

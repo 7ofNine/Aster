@@ -17,6 +17,7 @@
 
 #include "Horner.h"
 #include "Position.h"
+#include "TrigTable.h"
 
 namespace
 {
@@ -39,8 +40,14 @@ public:
     Position neptun(double const t); // get the position of Neptun
 
 private:
+  //  void term(int const i1, int const i2, int const pow, double const dlc, double const dls, double const drc, double const drs, double const dbc, double const dbs, double & dl, double & dr, double & db, double & u, double & v, TrigTable const & t1, TrigTable const & t2, double const t);
     static Horner const g;  // mean anomaly of Earth
     static Horner const e;  // excentricity of Earth orbit
     static Horner const eps;// mean obliquity of ecliptic
+    static Horner const g1; // "mean anomaly" Mercury
+    static Horner const g2; // "mean anomaly" Venus
+    static Horner const g4; // "mean anomaly" Mars
+    static Horner const g5; // "mean anomaly" Jupiter
+    static Horner const g6; // "mean anomlay" Saturn
 };
 

@@ -23,7 +23,7 @@
     <ProjectGuid>{B2EB93FD-FFA4-4699-B356-D2A375C1E752}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SOFA</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -135,11 +135,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\sofa.h" />
+    <ClInclude Include="src\sofam.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\a2af.c" />
     <ClCompile Include="src\a2tf.c" />
     <ClCompile Include="src\ab.c" />
+    <ClCompile Include="src\ae2hd.c" />
     <ClCompile Include="src\af2a.c" />
     <ClCompile Include="src\anp.c" />
     <ClCompile Include="src\anpm.c" />
@@ -246,6 +248,8 @@
     <ClCompile Include="src\gst06a.c" />
     <ClCompile Include="src\gst94.c" />
     <ClCompile Include="src\h2fk5.c" />
+    <ClCompile Include="src\hd2ae.c" />
+    <ClCompile Include="src\hd2pa.c" />
     <ClCompile Include="src\hfk5z.c" />
     <ClCompile Include="src\icrs2g.c" />
     <ClCompile Include="src\ir.c" />
@@ -349,6 +353,12 @@
     <ClCompile Include="src\tdbtt.c" />
     <ClCompile Include="src\tf2a.c" />
     <ClCompile Include="src\tf2d.c" />
+    <ClCompile Include="src\tpors.c" />
+    <ClCompile Include="src\tporv.c" />
+    <ClCompile Include="src\tpsts.c" />
+    <ClCompile Include="src\tpstv.c" />
+    <ClCompile Include="src\tpxes.c" />
+    <ClCompile Include="src\tpxev.c" />
     <ClCompile Include="src\tr.c" />
     <ClCompile Include="src\trxp.c" />
     <ClCompile Include="src\trxpv.c" />

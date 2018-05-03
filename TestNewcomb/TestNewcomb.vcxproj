@@ -23,7 +23,7 @@
     <ProjectGuid>{DF397DB3-E4D1-4208-8552-BCD4D350CA26}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TestNewcomb</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

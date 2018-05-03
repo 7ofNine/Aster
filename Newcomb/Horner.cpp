@@ -13,7 +13,7 @@ Horner::Horner(std::initializer_list<double> coeff): coeff(coeff)
 Horner::~Horner()
 { }
 
-double Horner::operator()(double const x)
+double Horner::operator()(double const x) const
 {
     // because of the order of the coefficients we do a reverse order. This corresponds to the Horner scheme.
     double value = 0.0;

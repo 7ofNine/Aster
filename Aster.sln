@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Aster", "Aster\Aster.vcxproj", "{E1FF83F4-4B52-4083-BA90-B738F774BE23}"
 EndProject
@@ -27,6 +27,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestSOFA", "TestSOFA\TestSO
 	ProjectSection(ProjectDependencies) = postProject
 		{B2EB93FD-FFA4-4699-B356-D2A375C1E752} = {B2EB93FD-FFA4-4699-B356-D2A375C1E752}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Newcomb", "Newcomb\Newcomb.vcxproj", "{255AE7AC-6C3A-45A0-AE11-15A17F924147}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestNewcomb", "TestNewcomb\TestNewcomb.vcxproj", "{DF397DB3-E4D1-4208-8552-BCD4D350CA26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +92,22 @@ Global
 		{23271173-3E9C-4635-B1D1-14E9DB0DBC75}.Release|Win32.Build.0 = Release|Win32
 		{23271173-3E9C-4635-B1D1-14E9DB0DBC75}.Release|x64.ActiveCfg = Release|x64
 		{23271173-3E9C-4635-B1D1-14E9DB0DBC75}.Release|x64.Build.0 = Release|x64
+		{255AE7AC-6C3A-45A0-AE11-15A17F924147}.Debug|Win32.ActiveCfg = Debug|Win32
+		{255AE7AC-6C3A-45A0-AE11-15A17F924147}.Debug|Win32.Build.0 = Debug|Win32
+		{255AE7AC-6C3A-45A0-AE11-15A17F924147}.Debug|x64.ActiveCfg = Debug|x64
+		{255AE7AC-6C3A-45A0-AE11-15A17F924147}.Debug|x64.Build.0 = Debug|x64
+		{255AE7AC-6C3A-45A0-AE11-15A17F924147}.Release|Win32.ActiveCfg = Release|Win32
+		{255AE7AC-6C3A-45A0-AE11-15A17F924147}.Release|Win32.Build.0 = Release|Win32
+		{255AE7AC-6C3A-45A0-AE11-15A17F924147}.Release|x64.ActiveCfg = Release|x64
+		{255AE7AC-6C3A-45A0-AE11-15A17F924147}.Release|x64.Build.0 = Release|x64
+		{DF397DB3-E4D1-4208-8552-BCD4D350CA26}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DF397DB3-E4D1-4208-8552-BCD4D350CA26}.Debug|Win32.Build.0 = Debug|Win32
+		{DF397DB3-E4D1-4208-8552-BCD4D350CA26}.Debug|x64.ActiveCfg = Debug|x64
+		{DF397DB3-E4D1-4208-8552-BCD4D350CA26}.Debug|x64.Build.0 = Debug|x64
+		{DF397DB3-E4D1-4208-8552-BCD4D350CA26}.Release|Win32.ActiveCfg = Release|Win32
+		{DF397DB3-E4D1-4208-8552-BCD4D350CA26}.Release|Win32.Build.0 = Release|Win32
+		{DF397DB3-E4D1-4208-8552-BCD4D350CA26}.Release|x64.ActiveCfg = Release|x64
+		{DF397DB3-E4D1-4208-8552-BCD4D350CA26}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
