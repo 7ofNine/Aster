@@ -746,5 +746,17 @@
     <ClCompile Include="src\tpxev.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\fk45z.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fk54z.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fk425.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fk524.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

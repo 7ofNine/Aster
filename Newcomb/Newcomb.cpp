@@ -14,7 +14,7 @@ namespace
 {
     static double const EPOCH_1900 = 2415020.0;  //TODO: this is probably wrong
     static double const BESSEL_EPOCH_1850 = 2396758.203;  // The besselian year 1850.0
-    static double const JULIAN_YEAR = 365.25;    // days in Julia year (mean solar days)
+    static double const JULIAN_YEAR = 365.25;    // days in Julian year (mean solar days)
     static double const JULIAN_CENTURY = 36525;  // days in a julian century
 
     // For some values Newcomb doesn't give explicit  formulas but calculltes tables. We use Leverriers values as he often refers to Leverrier.

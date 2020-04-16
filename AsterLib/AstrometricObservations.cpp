@@ -16,6 +16,12 @@ using namespace boost::algorithm;
 
 namespace {
 
+// The format of MPC observation records is described here
+//
+//  https://minorplanetcenter.net/iau/info/TechInfo.html
+//
+//
+
 static const int MPC_RECORD_SIZE = 80;
 // fortran columns are base 1, C++ strings are base 0
 static const int FORTRAN_BASE                 = 1;
@@ -96,6 +102,7 @@ AstrometricObservations::AstrometricObservations(string observationsFile)
         string mpcRecord;
         while(input)
         {
+            ++line;
             getline(input, mpcRecord); // read a single record
             if(input && !mpcRecord.empty())
             {
@@ -114,6 +121,7 @@ AstrometricObservations::AstrometricObservations(string observationsFile)
 
 AstrometricObservations::~AstrometricObservations(){}
 
+//MPC records give observations for observation time in UTC and coordinates referenced to J2000.0 
 bool AstrometricObservations::mpcRecord2Observation(string const & mpcRecord)
 {
     // the records have Fortran formatting
