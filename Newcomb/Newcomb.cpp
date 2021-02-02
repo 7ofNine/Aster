@@ -12,7 +12,7 @@ namespace sofa // put sofa in a namespace
 // epoche of the data is 1900, Jan 0 Greenwich mean noon. This corresponds to 2,415,020.0
 namespace
 {
-    static double const EPOCH_1900 = 2415020.0;  //TODO: this is probably wrong
+    static double const EPOCH_1900 = 2415020.5;  //TODO: this is probably wrong 1900 January 0 Noon GMT = 1899 December 31 noon 
     static double const BESSEL_EPOCH_1850 = 2396758.203;  // The besselian year 1850.0
     static double const JULIAN_YEAR = 365.25;    // days in Julian year (mean solar days)
     static double const JULIAN_CENTURY = 36525;  // days in a julian century
