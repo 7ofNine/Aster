@@ -758,5 +758,14 @@
     <ClCompile Include="src\fk524.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\moon98.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\atcc13.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\atccq.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

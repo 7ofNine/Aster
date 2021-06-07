@@ -23,7 +23,7 @@
     <ProjectGuid>{B2EB93FD-FFA4-4699-B356-D2A375C1E752}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SOFA</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -158,6 +158,8 @@
     <ClCompile Include="src\aper13.c" />
     <ClCompile Include="src\apio.c" />
     <ClCompile Include="src\apio13.c" />
+    <ClCompile Include="src\atcc13.c" />
+    <ClCompile Include="src\atccq.c" />
     <ClCompile Include="src\atci13.c" />
     <ClCompile Include="src\atciq.c" />
     <ClCompile Include="src\atciqn.c" />
@@ -270,6 +272,7 @@
     <ClCompile Include="src\ltpb.c" />
     <ClCompile Include="src\ltpecl.c" />
     <ClCompile Include="src\ltpequ.c" />
+    <ClCompile Include="src\moon98.c" />
     <ClCompile Include="src\num00a.c" />
     <ClCompile Include="src\num00b.c" />
     <ClCompile Include="src\num06a.c" />

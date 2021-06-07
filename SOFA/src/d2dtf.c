@@ -1,4 +1,5 @@
 #include "sofa.h"
+#include "sofam.h"
 #include <string.h>
 
 int iauD2dtf(const char *scale, int ndp, double d1, double d2,
@@ -76,9 +77,9 @@ int iauD2dtf(const char *scale, int ndp, double d1, double d2,
 **     iauD2tf      decompose days to hms
 **     iauDat       delta(AT) = TAI-UTC
 **
-**  This revision:  2014 February 15
+**  This revision:  2021 May 11
 **
-**  SOFA release 2021-01-25
+**  SOFA release 2021-05-12
 **
 **  Copyright (C) 2021 IAU SOFA Board.  See notes at end.
 */
@@ -119,7 +120,7 @@ int iauD2dtf(const char *scale, int ndp, double d1, double d2,
       dleap = dat24 - (2.0*dat12 - dat0);
 
    /* If leap second day, scale the fraction of a day into SI. */
-      leap = (dleap != 0.0);
+      leap = (fabs(dleap) > 0.5);
       if (leap) fd += fd * dleap/DAYSEC;
    }
 
@@ -187,6 +188,8 @@ int iauD2dtf(const char *scale, int ndp, double d1, double d2,
 
 /* Status. */
    return js;
+
+/* Finished. */
 
 /*----------------------------------------------------------------------
 **
