@@ -12,6 +12,7 @@ namespace {
     static const std::string MODEL_FOLDER = "weights\\"; // relative folde where error model files are located
     static const std::string MODEL_STATION = ".sta";     // file extension for models of observatories(station) independent of catalog (only for cbm10)
     static const std::string MODEL_OBSERV = ".rules"; //  file extension for star catalog/observatory models
+    
 }
 
 using namespace std;

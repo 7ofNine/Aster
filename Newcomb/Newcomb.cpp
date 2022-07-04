@@ -1,11 +1,14 @@
 #include <cmath>
 #include <functional>
+#include <stdexcept>
+
 #include "Newcomb.h"
 #include "TrigTable.h"
 
 namespace sofa // put sofa in a namespace
 {
     #include "sofa.h"
+    #include "sofam.h"
 }
 
 
@@ -98,7 +101,7 @@ Position Newcomb::earth(double const t)
     double const T = (t - EPOCH_1900)/JULIAN_CENTURY;
     double const tp =(t - BESSEL_EPOCH_1850)/JULIAN_YEAR;
 
-    TrigTable const earth  (-10, 12, g(T));
+    TrigTable const earth  (-10, 14, g(T));
     TrigTable const mercury( -1, -1, D2PI*modf(g1(tp), &dummy));
     TrigTable const venus(  -10, -1, D2PI*modf(g2(tp), &dummy));
     TrigTable const mars(     1, 17, D2PI*modf(g4(tp), &dummy));

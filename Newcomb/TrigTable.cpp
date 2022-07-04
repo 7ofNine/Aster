@@ -1,6 +1,7 @@
 #include "TrigTable.h"
 #include <cmath>
 #include <algorithm>
+#include <stdexcept>
 
 using namespace std;
 // create the table of cos and sin values cos(i*x), sin(*i*x) with min <= i <= max; 
